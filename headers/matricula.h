@@ -12,4 +12,8 @@ typedef struct
     
 } Matricula;
 
+Matricula *matricula_construct(Estudante *aluno, float notaFinal, float presenca, int aprovado);
+
+void matricula_destroy(Matricula *m);
+
 #endif

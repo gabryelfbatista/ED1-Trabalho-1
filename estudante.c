@@ -2,12 +2,12 @@
 #include <string.h>
 #include "./estudante.h"
 
-Estudante *estudante_construct(char nome, int matricula, char email)
+Estudante *estudante_construct(char *nome, int matricula, char *email)
 {
     Estudante *e = (Estudante *)malloc(sizeof(Estudante));
-    strcpy(e->nome, nome);
+    e->nome = nome;
     e->matricula = matricula;
-    strcopy(e->email, email);
+    e->email = email;
     return e;
 };
 

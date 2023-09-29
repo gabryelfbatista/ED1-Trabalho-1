@@ -3,12 +3,12 @@
 
 typedef struct
 {
-    char nome[50];
+    char *nome;
     int matricula;
-    char email[30];
+    char *email;
 } Estudante;
 
-Estudante *estudante_construct(char nome, int matricula, char email);
+Estudante *estudante_construct(char *nome, int matricula, char *email);
 
 void estudante_destroy(Estudante *e);
 
