@@ -15,6 +15,8 @@ void forward_list_push_front(ForwardList *l, data_type data);
 
 int forward_list_size(ForwardList *l);
 
+void forward_list_print(ForwardList *l, void (*print_fn)(data_type));
+
 void forward_list_destroy(ForwardList *l);
 
 #endif

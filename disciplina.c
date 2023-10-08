@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "./disciplina.h"
+#include "./headers/disciplina.h"
 
 Disciplina *disciplina_construct(char *nome, char *codigo)
 {

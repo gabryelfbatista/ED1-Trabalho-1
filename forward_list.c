@@ -1,5 +1,5 @@
-#include "forward_list.h"
-#include "node.h"
+#include "./headers/forward_list.h"
+#include "./headers/node.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -17,6 +17,23 @@ void forward_list_push_front(ForwardList *l, data_type data)
 int forward_list_size(ForwardList *l)
 {
     return l->size;
+};
+
+void forward_list_print(ForwardList *l, void (*print_fn)(data_type))
+{
+    Node *aux = l->head;
+    printf("[");
+    for (int i=0; i<l->size; i++){
+        if (i == l->size-1) {
+            print_fn(aux->value);
+            aux = aux->next;
+        } else {
+            print_fn(aux->value);
+            printf(", ");
+            aux = aux->next;
+        }
+    }
+    printf("]");
 };
 
 void forward_list_destroy(ForwardList *l) 

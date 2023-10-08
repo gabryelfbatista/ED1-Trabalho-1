@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "./matricula.h"
+#include "./headers/matricula.h"
 
 Matricula *matricula_construct(Estudante *aluno, float notaFinal, float presenca, int aprovado)
 {

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "./estudante.h"
+#include "./headers/estudante.h"
 
 Estudante *estudante_construct(char *nome, int matricula, char *email)
 {
