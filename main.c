@@ -3,12 +3,14 @@
 #include <string.h>
 #include "./headers/estudante.h"
 #include "./headers/matricula.h"
+#include "./headers/disciplina.h"
 #include "./headers/forward_list.h"
 
 int main(){
     
     ForwardList *alunos = forward_list_construct();
     ForwardList *matriculas = forward_list_construct();
+    ForwardList *disciplinas = forward_list_construct();
 
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     char separador[2] = ";";
@@ -24,6 +26,7 @@ int main(){
 
     /* VARIAVEIS PARA AUXILIAR NA CONSTRUÇAO DAS ESTRUTURAS*/
     char *nome;
+    char *nome_professor;
     int matricula;
     char *email;
     char *codigo;
@@ -77,6 +80,13 @@ int main(){
             pedaco_texto = strtok(resultado, separador);
             codigo = malloc(sizeof(pedaco_texto));
             strcpy(codigo, pedaco_texto);
+
+            pedaco_texto = strtok(resultado, separador);
+            nome_professor = malloc(sizeof(pedaco_texto));
+            strcpy(nome_professor, pedaco_texto);
+
+            Disciplina *d = disciplina_construct(nome, codigo, nome_professor);
+            forward_list_push_front(disciplinas, d);
         }
         count_lines++;
         printf("a Count lines eh: %d\n", count_lines);
