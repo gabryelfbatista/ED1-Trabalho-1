@@ -36,6 +36,35 @@ void forward_list_print(ForwardList *l, void (*print_fn)(data_type))
     printf("]");
 };
 
+
+data_type forward_list_find(ForwardList *l, void* chave, int (*cmp_fn)(void *, char *))
+{
+    Node *aux = l->head;
+
+    while (aux != NULL)
+    {
+        if (cmp_fn(aux->value, chave) == 0)
+            return aux->value;
+
+        aux = aux->next;
+    }
+    
+    return aux->value;
+}
+
+data_type forward_list_get(ForwardList *l, int i)
+{
+    if (i < 0 || i>=l->size) {
+        exit(printf("Error: index out of bounds."));
+    }
+
+    Node *aux = l->head;
+    for (int j=0; j<i; j++){
+        aux = aux->next;
+    }
+    return aux->value;
+};
+
 void forward_list_destroy(ForwardList *l) 
 {
     Node *aux = l->head;
