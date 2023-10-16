@@ -19,6 +19,7 @@ ForwardList *cria_lista_alunos(FILE *arq)
     char separador[2] = ";";
 
     char *nome;
+    char *nome_professor;
     int matricula;
     char *email;
 
@@ -149,8 +150,6 @@ int main(){
     /* VARIAVEIS PARA AUXILIAR NA CONSTRUÇAO DAS ESTRUTURAS*/
 
     // scanf("%s", entrada);
-
-    FILE *arq = fopen("entrada.txt", "r");
     
     free(alunos);
     // free(matriculas);
