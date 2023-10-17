@@ -37,13 +37,13 @@ void forward_list_print(ForwardList *l, void (*print_fn)(data_type))
 };
 
 
-data_type forward_list_find(ForwardList *l, void* chave, int (*cmp_fn)(void *, char *))
+data_type forward_list_find(ForwardList *l, void *val, int (*cmp_fn)(void *, data_type))
 {
     Node *aux = l->head;
 
     while (aux != NULL)
     {
-        if (cmp_fn(aux->value, chave) == 0)
+        if (cmp_fn(aux->value, val) == 1)
             return aux->value;
 
         aux = aux->next;

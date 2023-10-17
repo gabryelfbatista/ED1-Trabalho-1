@@ -1,24 +1,15 @@
-#ifndef _FORWARD_forward_list_H_
-#define _FORWARD_forward_list_H_
-
+#include <stdlib.h>
 #include "node.h"
 
-typedef struct
+Node *node_construct(data_type value, Node *next)
 {
-    Node *head;
-    int size;
-} ForwardList;
+    Node *n = (Node *)malloc(sizeof(Node));
+    n->value = value;
+    n->next = next;
+    return n;
+}
 
-ForwardList *forward_list_construct();
-
-void forward_list_push_front(ForwardList *l, data_type data);
-
-int forward_list_size(ForwardList *l);
-
-void forward_list_print(ForwardList *l, void (*print_fn)(data_type));
-
-data_type forward_list_get(ForwardList *l, int i);
-
-void forward_list_destroy(ForwardList *l);
-
-#endif
+void node_destroy(Node *n)
+{
+    free(n);
+}
