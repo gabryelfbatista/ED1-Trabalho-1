@@ -6,11 +6,21 @@
 #include "./headers/disciplina.h"
 #include "./headers/forward_list.h"
 
-int compara_string(char *string1, data_type disciplina)
+int compara_string(void *string1, data_type disciplina)
 {
     char *s = string1;
     Disciplina *d = disciplina;
     return strcmp(s, d->codigo);   
+};
+
+int compara_int(void *numero, void *estrutura)
+{   
+    Estudante *e = estrutura;
+    if (numero == e->matricula)
+    {
+        return 1;
+    } 
+    return 0;
 };
 
 ForwardList *cria_lista_alunos(FILE *arq)
@@ -21,12 +31,10 @@ ForwardList *cria_lista_alunos(FILE *arq)
     int qtd_alunos;
     char linha[200];
     char *resultado;
-    int contador_linhas;
     char *pedaco_texto;
     char separador[2] = ";";
 
     char *nome;
-    char *nome_professor;
     int matricula;
     char *email;
 
@@ -60,10 +68,8 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
 
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_disciplinas;
-    int qtd_requisitos;
     char linha[200];
     char *resultado;
-    int contador_linhas;
     char *pedaco_texto;
     char separador[2] = ";";
 
@@ -89,25 +95,23 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
         nome_professor = malloc(sizeof(pedaco_texto));
         strcpy(nome_professor, pedaco_texto);
 
-        Disciplina *d = estudante_construct(nome, codigo, nome_professor);
+        Disciplina *d = disciplina_construct(nome, codigo, nome_professor);
         forward_list_push_front(disciplinas, d);
     }
 
     return disciplinas;
 }
 
-void *cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
+void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
 {
 
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_requisitos;
     char linha[200];
     char *resultado;
-    int contador_linhas;
     char *pedaco_texto;
     char separador[2] = ";";
 
-    char *nome;
     char *codigo;
     char *codigo_requisito;
 
@@ -125,7 +129,7 @@ void *cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
 
         Disciplina *d_aux = aux->value;
 
-        pedaco_texto = strtok(resultado, separador);
+        pedaco_texto = strtok(NULL, "\n");
         codigo_requisito = malloc(sizeof(pedaco_texto));
         strcpy(codigo_requisito, pedaco_texto);
 
@@ -136,17 +140,72 @@ void *cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
         disciplina_destroy(d_aux);
         node_destroy(aux);
         node_destroy(aux2);
+    }
+    // return requisitos;
+}
+
+ForwardList *cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *aluno)
+{
+    ForwardList *matriculas = forward_list_construct();
+
+    /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
+    int qtd_matriculas;
+    char linha[200];
+    char *resultado;
+    char *pedaco_texto;
+    char separador[2] = ";";
+
+    char *codigo;
+    int matricula_aluno;
+    float nota;
+    float presenca;
+    int aprovado;
+
+    fscanf(arq, "%d", &qtd_matriculas);
+
+    for (int i = 0; i < qtd_matriculas; i++)
+    {
+        resultado = fgets(linha, 200, arq);
+
+        pedaco_texto = strtok(resultado, separador);
+        codigo = malloc(sizeof(pedaco_texto));
+        strcpy(codigo, pedaco_texto);
+
+        Node *aux = forward_list_find(disciplinas, codigo, compara_string);
+
+        Disciplina *d_aux = aux->value;
+
+        pedaco_texto = strtok(NULL, separador);
+        matricula_aluno = atoi(pedaco_texto);
+        
+        Node *aux2 = forward_list_find(aluno, matricula_aluno, compara_int);
+
+        pedaco_texto = strtok(NULL, separador); 
+        nota = atof(pedaco_texto);
+        
+        pedaco_texto = strtok(NULL, separador);
+        presenca = atof(pedaco_texto);
+        
+        pedaco_texto = strtok(NULL, "\n");
+        aprovado = atoi(pedaco_texto);
+        
+        Matricula *m = matricula_construct(aux2->value, nota, presenca, aprovado);
+
+        forward_list_push_front(matriculas, m);
+
+        disciplina_destroy(d_aux);
+        node_destroy(aux);
+        node_destroy(aux2);
 
         // Disciplina *d = estudante_construct(nome, codigo, nome_professor);
         // forward_list_push_front(requisitos, d);
     }
-
-    // return requisitos;
+    return matriculas;
 }
 
 int main(){
     char entrada[20] = "entrada.txt";
-    FILE *arq = fopen("entrada.txt", "r");
+    FILE *arq = fopen(entrada, "r");
 
     ForwardList *alunos = cria_lista_alunos(arq);
     ForwardList *disciplinas = cria_lista_disciplinas(arq);

@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "node.h"
+#include "./headers/node.h"
 
 Node *node_construct(data_type value, Node *next)
 {
