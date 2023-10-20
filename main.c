@@ -6,21 +6,40 @@
 #include "./headers/disciplina.h"
 #include "./headers/forward_list.h"
 
-int compara_string(void *string1, data_type disciplina)
+int compara_string(void *string1, data_type estrutura)
 {
     char *s = string1;
-    Disciplina *d = disciplina;
-    return strcmp(s, d->codigo);   
+    Disciplina *d = estrutura;
+    int i = strcmp(s, d->codigo);
+    disciplina_destroy(d);
+    return i;   
 };
 
-int compara_int(void *numero, void *estrutura)
+int compara_int(void *numero, data_type estrutura)
 {   
+    int *numero_i = numero;
     Estudante *e = estrutura;
-    if (numero == e->matricula)
+    if ((*numero_i) == e->matricula)
     {
+        estudante_destroy(e);
         return 1;
-    } 
+    }
+    estudante_destroy(e); 
     return 0;
+};
+
+void print_string_nome_estudante(data_type data)
+{
+    Estudante *e = data;
+    printf("%s", e->nome);
+    estudante_destroy(e);
+};
+
+void print_string_codigo_disciplina(data_type data)
+{
+    Disciplina *d = data;
+    printf("%s", d->codigo);
+    disciplina_destroy(d);
 };
 
 ForwardList *cria_lista_alunos(FILE *arq)
@@ -29,8 +48,8 @@ ForwardList *cria_lista_alunos(FILE *arq)
 
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_alunos;
-    char linha[200];
-    char *resultado;
+    char linha[100];
+    char *resultado = " ";
     char *pedaco_texto;
     char separador[2] = ";";
 
@@ -38,15 +57,19 @@ ForwardList *cria_lista_alunos(FILE *arq)
     int matricula;
     char *email;
 
-    fscanf(arq, "%d", &qtd_alunos);
+    fscanf(arq, "%d\n", &qtd_alunos);
 
     for (int i = 0; i < qtd_alunos; i++)
     {
-        resultado = fgets(linha, 200, arq);
+        resultado = fgets(linha, 100, arq);
+
+        // printf("Resultado: %s\n", resultado);
 
         pedaco_texto = strtok(resultado, separador);
         nome = malloc(sizeof(pedaco_texto));
         strcpy(nome, pedaco_texto);
+
+        // printf("Nome: %s\n", nome);
 
         pedaco_texto = strtok(NULL, separador);
         matricula = atoi(pedaco_texto);
@@ -77,7 +100,7 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
     char *codigo;
     char *nome_professor;
 
-    fscanf(arq, "%d", &qtd_disciplinas);
+    fscanf(arq, "%d\n", &qtd_disciplinas);
 
     for (int i = 0; i < qtd_disciplinas; i++)
     {
@@ -115,7 +138,7 @@ void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
     char *codigo;
     char *codigo_requisito;
 
-    fscanf(arq, "%d", &qtd_requisitos);
+    fscanf(arq, "%d\n", &qtd_requisitos);
 
     for (int i = 0; i < qtd_requisitos; i++)
     {
@@ -125,7 +148,8 @@ void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
         codigo = malloc(sizeof(pedaco_texto));
         strcpy(codigo, pedaco_texto);
 
-        Node *aux = forward_list_find(disciplinas, codigo, compara_string);
+        Node *aux = node_construct(NULL, NULL);
+        aux->value = forward_list_find(disciplinas, codigo, compara_string);
 
         Disciplina *d_aux = aux->value;
 
@@ -133,7 +157,8 @@ void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
         codigo_requisito = malloc(sizeof(pedaco_texto));
         strcpy(codigo_requisito, pedaco_texto);
 
-        Node *aux2 = forward_list_find(disciplinas, codigo_requisito, compara_string);
+        Node *aux2 = node_construct(NULL, NULL); 
+        aux2->value = forward_list_find(disciplinas, codigo_requisito, compara_string);
 
         forward_list_push_front(d_aux->pre_requisito, aux2->value);
 
@@ -161,7 +186,7 @@ ForwardList *cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardL
     float presenca;
     int aprovado;
 
-    fscanf(arq, "%d", &qtd_matriculas);
+    fscanf(arq, "%d\n", &qtd_matriculas);
 
     for (int i = 0; i < qtd_matriculas; i++)
     {
@@ -171,14 +196,15 @@ ForwardList *cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardL
         codigo = malloc(sizeof(pedaco_texto));
         strcpy(codigo, pedaco_texto);
 
-        Node *aux = forward_list_find(disciplinas, codigo, compara_string);
+        Node *aux = node_construct(NULL, NULL);
+        aux->value = forward_list_find(disciplinas, codigo, compara_string);
 
         Disciplina *d_aux = aux->value;
 
         pedaco_texto = strtok(NULL, separador);
         matricula_aluno = atoi(pedaco_texto);
         
-        Node *aux2 = forward_list_find(aluno, matricula_aluno, compara_int);
+        Node *aux2 = forward_list_find(aluno, &matricula_aluno, compara_int);
 
         pedaco_texto = strtok(NULL, separador); 
         nota = atof(pedaco_texto);
@@ -208,17 +234,17 @@ int main(){
     FILE *arq = fopen(entrada, "r");
 
     ForwardList *alunos = cria_lista_alunos(arq);
+    printf("Lista de alunos cadastrados: ");
+    forward_list_print(alunos, print_string_nome_estudante);
+
     ForwardList *disciplinas = cria_lista_disciplinas(arq);
-
-    /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
-    
-
-    /* VARIAVEIS PARA AUXILIAR NA CONSTRUÇAO DAS ESTRUTURAS*/
+    printf("Codigo de disciplinas cadastradas: ");
+    forward_list_print(disciplinas, print_string_codigo_disciplina);
+    // cria_lista_requisitos(arq, disciplinas);
 
     // scanf("%s", entrada);
     
     free(alunos);
-    // free(matriculas);
     free(disciplinas);
 
     fclose(arq);
