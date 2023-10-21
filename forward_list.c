@@ -49,7 +49,7 @@ data_type forward_list_find(ForwardList *l, void *val, int (*cmp_fn)(void *, dat
         aux = aux->next;
     }
     
-    return aux->value;
+    return NULL;
 }
 
 data_type forward_list_get(ForwardList *l, int i)
