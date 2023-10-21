@@ -98,8 +98,6 @@ void pre_requisitos_completos(char *codigo, ForwardList *d)
     Node *aux = d_aux->pre_requisito->head;
 
     Disciplina *d_aux2 = aux->value;
-
-    // forward_list_print(d_aux->pre_requisito, print_string_codigo);
     
     printf("Pre requisitos completos da disciplina %s:\n", codigo);
     while(aux != NULL)
@@ -111,7 +109,7 @@ void pre_requisitos_completos(char *codigo, ForwardList *d)
         {
             d_aux2->pre_requisito = forward_list_reverse(d_aux2->pre_requisito);
             forward_list_print(d_aux2->pre_requisito, print_string_codigo);
-            printf(";\n");
+            // printf(";\n");
         }
         aux = aux->next; 
     }

@@ -22,18 +22,17 @@ int forward_list_size(ForwardList *l)
 void forward_list_print(ForwardList *l, void (*print_fn)(data_type))
 {
     Node *aux = l->head;
-    printf("[");
     for (int i=0; i<l->size; i++){
         if (i == l->size-1) {
             print_fn(aux->value);
             aux = aux->next;
+            printf("\n");
         } else {
             print_fn(aux->value);
-            printf(", ");
+            printf("\n");
             aux = aux->next;
         }
     }
-    printf("]");
 };
 
 

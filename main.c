@@ -7,7 +7,7 @@
 #include "./headers/forward_list.h"
 #include "./headers/relatorios.h"
 
-int compara_string(void *string1, data_type estrutura)
+int compara_string_codigo(void *string1, data_type estrutura)
 {
     char *s = string1;
     Disciplina *d = estrutura;
@@ -36,6 +36,14 @@ void print_string_codigo_disciplina(data_type data)
     Disciplina *d = data;
     printf("%s", d->codigo);
 };
+
+void checa_existencia_disciplina(ForwardList *d, char *codigo)
+{
+    if (forward_list_find(d, codigo, compara_string_codigo) == NULL)
+        {
+            exit(printf("Essa disciplina nao foi encontrada \n"));
+        };
+}
 
 ForwardList *cria_lista_alunos(FILE *arq)
 {
@@ -76,7 +84,6 @@ ForwardList *cria_lista_alunos(FILE *arq)
         Estudante *e = estudante_construct(nome, matricula, email);
         forward_list_push_front(alunos, e);
     }
-
     return alunos;
 }
 
@@ -149,14 +156,14 @@ void cria_lista_requisitos(FILE *arq, ForwardList *d)
 
         // d_aux = d->head->value;
 
-        d_aux = forward_list_find(d, codigo, compara_string);
+        d_aux = forward_list_find(d, codigo, compara_string_codigo);
         // printf("Codigo disciplina encontrada: %s\n", d_aux->codigo);
 
         pedaco_texto = strtok(NULL, "\n");
         codigo_requisito = malloc(sizeof(pedaco_texto));
         strcpy(codigo_requisito, pedaco_texto);
 
-        d_aux2 = forward_list_find(d, codigo_requisito, compara_string);
+        d_aux2 = forward_list_find(d, codigo_requisito, compara_string_codigo);
         // printf("Codigo pre requisito encontrado: %s\n", d_aux2->codigo);
 
         forward_list_push_front(d_aux->pre_requisito, d_aux2);
@@ -208,7 +215,7 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
             codigo = malloc(sizeof(pedaco_codigo));
             strcpy(codigo, pedaco_codigo);
 
-            d_aux = forward_list_find(disciplinas, codigo, compara_string);
+            d_aux = forward_list_find(disciplinas, codigo, compara_string_codigo);
 
             matricula_aluno = atoi(pedaco_matricula);
 
@@ -239,13 +246,13 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
             codigo = malloc(sizeof(pedaco_codigo));
             strcpy(codigo, pedaco_codigo);
 
-            d_aux = forward_list_find(disciplinas, codigo, compara_string);
+            d_aux = forward_list_find(disciplinas, codigo, compara_string_codigo);
 
             matricula_aluno = atoi(pedaco_matricula);
 
             e_aux = forward_list_find(alunos, &matricula_aluno, compara_int);
 
-            printf("Nome do aluno encontrado: %s\n", e_aux->nome);
+            // printf("Nome do aluno encontrado: %s\n", e_aux->nome);
 
             matricula_comparador = malloc(sizeof(pedaco_matricula));
             strcpy(matricula_comparador, pedaco_matricula);
@@ -265,55 +272,119 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
 
             forward_list_push_front(d_aux->matriculas, m);
         }
-       
     }
-
 }
 
 int main(){
-    char entrada[20] = "entrada.txt";
+    /* VARIAVEIS OBTIDAS PRA LER O ARQUIVO DE ENTRADA */
+    char entrada[20];
+    int num_relatorio;
+
+    /* VARIAVEIS USADAS PARA GERAR RELATORIOS */
+    char codigo_disciplina[20];
+    int num_matricula;
+
+    scanf("%s", entrada);
+    scanf("%d", &num_relatorio);
     FILE *arq = fopen(entrada, "r");
 
     ForwardList *alunos = cria_lista_alunos(arq);
-    printf("Lista de alunos cadastrados: ");
-    forward_list_print(alunos, print_string_nome_estudante);
-    printf("\n");
-
     ForwardList *disciplinas = cria_lista_disciplinas(arq);
-    printf("Codigo de disciplinas cadastradas: ");
-    forward_list_print(disciplinas, print_string_codigo_disciplina);
-    printf("\n");
     cria_lista_requisitos(arq, disciplinas);
+    cria_lista_matriculas(arq, disciplinas, alunos);
+    
+    // printf("Lista de alunos cadastrados: ");
+    // forward_list_print(alunos, print_string_nome_estudante);
+    // printf("\n");
 
-    // verifica a lista de pre requisito registrada
-    Node *aux = disciplinas->head;
-    Disciplina *d;
+    // printf("Codigo de disciplinas cadastradas: ");
+    // forward_list_print(disciplinas, print_string_codigo_disciplina);
+    // printf("\n");
 
-    while (aux != NULL)
+    // // verifica a lista de pre requisito registrada
+    // Node *aux = disciplinas->head;
+    // Disciplina *d;
+
+    // while (aux != NULL)
+    // {
+    //     d = aux->value;
+    //     if (d->pre_requisito->size !=0){
+    //         printf("Pre-requisitos da disciplina %s:", d->codigo);
+    //         forward_list_print(d->pre_requisito, print_string_codigo_disciplina);
+    //         printf("\n");
+    //     }
+    //     aux = aux->next;
+    // }
+
+    // aux = disciplinas->head->next->next->next->next;
+    // d = aux->value;
+
+    // printf("%d\n", forward_list_size(d->matriculas));
+
+    if (num_relatorio == 1)
     {
-        d = aux->value;
-        if (d->pre_requisito->size !=0){
-            printf("Pre-requisitos da disciplina %s:", d->codigo);
-            forward_list_print(d->pre_requisito, print_string_codigo_disciplina);
-            printf("\n");
-        }
-        aux = aux->next;
+        printf("Digite o codigo da disciplina:\n");
+        scanf("%s", codigo_disciplina);
+
+        checa_existencia_disciplina(disciplinas, codigo_disciplina);
+
+        alunos_matriculados(codigo_disciplina, disciplinas, alunos);
+    }
+    else if (num_relatorio == 2)
+    {
+        printf("Digite o codigo da disciplina:\n");
+        scanf("%s", codigo_disciplina);
+
+        checa_existencia_disciplina(disciplinas, codigo_disciplina);
+
+        pre_requisitos_diretos(codigo_disciplina, disciplinas);
+    }
+    else if (num_relatorio == 3)
+    {
+        printf("Digite o codigo da disciplina:\n");
+        scanf("%s", codigo_disciplina);
+
+        checa_existencia_disciplina(disciplinas, codigo_disciplina);
+
+        pre_requisitos_completos(codigo_disciplina, disciplinas);
+    }
+    else if (num_relatorio == 4)
+    {
+        scanf("%d", &num_matricula);
+        disciplinas_matriculadas(num_matricula, disciplinas);
     }
 
-    aux = disciplinas->head->next->next->next->next;
-    d = aux->value;
-    cria_lista_matriculas(arq, disciplinas, alunos);
+    Node *n_aux;
+    Node *n_aux2;
+    Matricula *m_aux;
+    Disciplina *d_aux;
+    Estudante *e_aux;
 
-    printf("%d\n", forward_list_size(d->matriculas));
-    // scanf("%s", entrada);
-    
-    // alunos_matriculados("ALG-1", disciplinas, alunos);
-    // pre_requisitos_diretos("ALG-1", disciplinas);
-    // pre_requisitos_completos("INF-3", disciplinas);
-    disciplinas_matriculadas(333, disciplinas);
+    n_aux = disciplinas->head;
+    d_aux = n_aux->value;
+    n_aux2 = d_aux->matriculas->head;
+    while (n_aux != NULL)
+    {   
+        d_aux = n_aux->value;
+        n_aux2 = d_aux->matriculas->head;
+        m_aux = n_aux2->value;
+        matricula_destroy(m_aux);
+        disciplina_destroy(n_aux->value);
+        n_aux = n_aux->next;
+    }
 
-    free(alunos);
-    free(disciplinas);
+    n_aux = alunos->head;
+    while (n_aux != NULL)
+    {
+        e_aux = n_aux->value;
+        estudante_destroy(e_aux);
+        n_aux = n_aux->next;
+    }
+
+    forward_list_destroy(alunos);
+    forward_list_destroy(disciplinas);
+    node_destroy(n_aux);
+    node_destroy(n_aux2);
 
     fclose(arq);
     return 0;

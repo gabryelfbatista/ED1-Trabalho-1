@@ -14,5 +14,6 @@ Matricula *matricula_construct(Estudante *aluno, float notaFinal, float presenca
 
 void matricula_destroy(Matricula *m)
 {
+    estudante_destroy(m->aluno);
     free(m);
 };
