@@ -1,7 +1,8 @@
-3
+4
 Joao Jamelao;10;joao@email.com
 Maria Miranda;3;maria@email.com
 Lucas Louzada;888;lucas@email.com
+Alexandre Souza;333;Alexandre@email.com
 5
 Programacao I;INF-1;Thiara
 Programacao II;INF-2;Flavio

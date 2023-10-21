@@ -195,7 +195,7 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
     */
     for (int i = 0; i <= qtd_matriculas; i++) 
     {
-        printf("O valor de i eh: %d\n", i);
+        // printf("O valor de i eh: %d\n", i);
         resultado = fgets(linha, 200, arq);
 
         pedaco_codigo = strtok(resultado, separador);
@@ -310,7 +310,7 @@ int main(){
     // alunos_matriculados("ALG-1", disciplinas, alunos);
     // pre_requisitos_diretos("ALG-1", disciplinas);
     // pre_requisitos_completos("INF-3", disciplinas);
-    disciplinas_matriculadas(5, disciplinas);
+    disciplinas_matriculadas(333, disciplinas);
 
     free(alunos);
     free(disciplinas);

@@ -129,6 +129,7 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
     Disciplina *d_encontrada;
     Node *it_matriculas;
     Matricula *m_aux;
+    int encontrou_matricula = 0;
 
     //itera sobre o vetor de disciplinas
     while (it_disciplina != NULL)
@@ -147,6 +148,7 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
                 {
                     forward_list_push_front(lista_matriculas, d_aux);
                 }
+                encontrou_matricula = 1;
             }
 
             it_matriculas = it_matriculas->next;
@@ -154,7 +156,11 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
 
         it_disciplina = it_disciplina->next;
     }
-
+    
+    if (encontrou_matricula == 0)
+    { 
+        exit(printf("Esse aluno nao esta matriculado em disciplinas\n"));
+    }
     printf("O aluno esta matriculado nas disciplinas: ");
     forward_list_print(lista_matriculas, print_string_codigo);
 
@@ -165,3 +171,8 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
     disciplina_destroy(d_encontrada);
     matricula_destroy(m_aux);
 };
+
+void reprovacoes_por_professor(ForwardList *d)
+{
+    
+}
