@@ -21,6 +21,8 @@ data_type forward_list_find(ForwardList *l, void* val, int (*cmp_fn)(void *, dat
 
 data_type forward_list_get(ForwardList *l, int i);
 
+ForwardList *forward_list_reverse(ForwardList *l);
+
 void forward_list_destroy(ForwardList *l);
 
 #endif

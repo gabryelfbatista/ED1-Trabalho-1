@@ -65,6 +65,20 @@ data_type forward_list_get(ForwardList *l, int i)
     return aux->value;
 };
 
+ForwardList *forward_list_reverse(ForwardList *l)
+{
+    ForwardList *l2 = forward_list_construct();
+    
+    Node *aux = l->head;
+    while(aux != NULL)
+    {
+        forward_list_push_front(l2, aux->value);
+        aux = aux->next;
+    }
+    l2->size = l->size;
+    return l2;
+};
+
 void forward_list_destroy(ForwardList *l) 
 {
     Node *aux = l->head;
