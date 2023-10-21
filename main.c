@@ -10,9 +10,7 @@ int compara_string(void *string1, data_type estrutura)
 {
     char *s = string1;
     Disciplina *d = estrutura;
-    int i = strcmp(s, d->codigo);
-    disciplina_destroy(d);
-    return i;   
+    return strcmp(s, d->codigo);
 };
 
 int compara_int(void *numero, data_type estrutura)
@@ -21,25 +19,21 @@ int compara_int(void *numero, data_type estrutura)
     Estudante *e = estrutura;
     if ((*numero_i) == e->matricula)
     {
-        estudante_destroy(e);
-        return 1;
+        return 0;
     }
-    estudante_destroy(e); 
-    return 0;
+    return 1;
 };
 
 void print_string_nome_estudante(data_type data)
 {
     Estudante *e = data;
     printf("%s", e->nome);
-    estudante_destroy(e);
 };
 
 void print_string_codigo_disciplina(data_type data)
 {
     Disciplina *d = data;
     printf("%s", d->codigo);
-    disciplina_destroy(d);
 };
 
 ForwardList *cria_lista_alunos(FILE *arq)
@@ -125,9 +119,8 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
     return disciplinas;
 }
 
-void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
+void cria_lista_requisitos(FILE *arq, ForwardList *d)
 {
-
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_requisitos;
     char linha[200];
@@ -137,36 +130,36 @@ void cria_lista_requisitos(FILE *arq, ForwardList *disciplinas)
 
     char *codigo;
     char *codigo_requisito;
+    Disciplina *d_aux;
+    Disciplina *d_aux2;
 
     fscanf(arq, "%d\n", &qtd_requisitos);
+    // printf("qtd_requisitos: %d\n", qtd_requisitos);
 
     for (int i = 0; i < qtd_requisitos; i++)
     {
         resultado = fgets(linha, 200, arq);
+        // printf("Resultado: %s\n", resultado);
 
         pedaco_texto = strtok(resultado, separador);
         codigo = malloc(sizeof(pedaco_texto));
         strcpy(codigo, pedaco_texto);
+        // printf("Codigo: %s\n", codigo);
 
-        Node *aux = node_construct(NULL, NULL);
-        aux->value = forward_list_find(disciplinas, codigo, compara_string);
+        // d_aux = d->head->value;
 
-        Disciplina *d_aux = aux->value;
+        d_aux = forward_list_find(d, codigo, compara_string);
+        // printf("Codigo disciplina encontrada: %s\n", d_aux->codigo);
 
         pedaco_texto = strtok(NULL, "\n");
         codigo_requisito = malloc(sizeof(pedaco_texto));
         strcpy(codigo_requisito, pedaco_texto);
 
-        Node *aux2 = node_construct(NULL, NULL); 
-        aux2->value = forward_list_find(disciplinas, codigo_requisito, compara_string);
+        d_aux2 = forward_list_find(d, codigo_requisito, compara_string);
+        // printf("Codigo pre requisito encontrado: %s\n", d_aux2->codigo);
 
-        forward_list_push_front(d_aux->pre_requisito, aux2->value);
-
-        disciplina_destroy(d_aux);
-        node_destroy(aux);
-        node_destroy(aux2);
+        forward_list_push_front(d_aux->pre_requisito, d_aux2);
     }
-    // return requisitos;
 }
 
 ForwardList *cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *aluno)
@@ -233,14 +226,34 @@ int main(){
     char entrada[20] = "entrada.txt";
     FILE *arq = fopen(entrada, "r");
 
+    char *codigo = "INF-2";
+
     ForwardList *alunos = cria_lista_alunos(arq);
     printf("Lista de alunos cadastrados: ");
     forward_list_print(alunos, print_string_nome_estudante);
+    printf("\n");
 
     ForwardList *disciplinas = cria_lista_disciplinas(arq);
     printf("Codigo de disciplinas cadastradas: ");
     forward_list_print(disciplinas, print_string_codigo_disciplina);
-    // cria_lista_requisitos(arq, disciplinas);
+    printf("\n");
+    cria_lista_requisitos(arq, disciplinas);
+
+    // verifica a lista de pre requisito registrada
+    Node *aux = disciplinas->head;
+    Disciplina *d;
+
+    while (aux != NULL)
+    {
+        d = aux->value;
+        if (d->pre_requisito->size !=0){
+            printf("Tamanho lista de pre requisito: %d\n", d->pre_requisito->size);
+            printf("Pre-requisitos da disciplina %s:", d->codigo);
+            forward_list_print(d->pre_requisito, print_string_codigo_disciplina);
+            printf("\n");
+        }
+        aux = aux->next;
+    }
 
     // scanf("%s", entrada);
     

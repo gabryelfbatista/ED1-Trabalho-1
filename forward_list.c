@@ -43,7 +43,7 @@ data_type forward_list_find(ForwardList *l, void *val, int (*cmp_fn)(void *, dat
 
     while (aux != NULL)
     {
-        if (cmp_fn(val, aux->value) == 1)
+        if (cmp_fn(val, aux->value) == 0)
             return aux->value;
 
         aux = aux->next;
