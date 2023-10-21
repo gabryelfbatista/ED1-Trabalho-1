@@ -2,13 +2,18 @@
 Joao Jamelao;10;joao@email.com
 Maria Miranda;3;maria@email.com
 Lucas Louzada;888;lucas@email.com
-3
+5
 Programacao I;INF-1;Thiara
 Programacao II;INF-2;Flavio
 Estruturas de Dados;INF-3;Filomena
-2
+Algoritmos;ALG-1;Claudia
+Introducao a eng;INF-0;Andre
+5
 INF-3;INF-2
 INF-2;INF-1
+INF-2;INF-0
+INF-3;ALG-1
+ALG-1;INF-0
 4
 INF-2;888;3;1;0
 INF-2;888;7;0.1;0

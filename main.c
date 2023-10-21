@@ -188,8 +188,14 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
 
     fscanf(arq, "%d\n", &qtd_matriculas);
 
-    for (int i = 0; i < qtd_matriculas; i++)
+    /*
+        OBS: como na logica que eu usei a primeira matricula nunca tem um igual,
+        no primeiro ciclo de iteração ele sempre soma +1 entao tem q iterar
+        até chegar a ao numero de quantidade de matriculas
+    */
+    for (int i = 0; i <= qtd_matriculas; i++) 
     {
+        printf("O valor de i eh: %d\n", i);
         resultado = fgets(linha, 200, arq);
 
         pedaco_codigo = strtok(resultado, separador);
@@ -294,15 +300,17 @@ int main(){
         aux = aux->next;
     }
 
-    aux = disciplinas->head->next;
+    aux = disciplinas->head->next->next->next->next;
     d = aux->value;
     cria_lista_matriculas(arq, disciplinas, alunos);
 
     printf("%d\n", forward_list_size(d->matriculas));
     // scanf("%s", entrada);
     
-    // alunos_matriculados("INF-2", disciplinas, alunos);
-    pre_requisitos_diretos("INF-2", disciplinas);
+    // alunos_matriculados("ALG-1", disciplinas, alunos);
+    // pre_requisitos_diretos("ALG-1", disciplinas);
+    // pre_requisitos_completos("INF-3", disciplinas);
+    disciplinas_matriculadas(5, disciplinas);
 
     free(alunos);
     free(disciplinas);
