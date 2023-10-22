@@ -292,34 +292,6 @@ int main(){
     ForwardList *disciplinas = cria_lista_disciplinas(arq);
     cria_lista_requisitos(arq, disciplinas);
     cria_lista_matriculas(arq, disciplinas, alunos);
-    
-    // printf("Lista de alunos cadastrados: ");
-    // forward_list_print(alunos, print_string_nome_estudante);
-    // printf("\n");
-
-    // printf("Codigo de disciplinas cadastradas: ");
-    // forward_list_print(disciplinas, print_string_codigo_disciplina);
-    // printf("\n");
-
-    // // verifica a lista de pre requisito registrada
-    // Node *aux = disciplinas->head;
-    // Disciplina *d;
-
-    // while (aux != NULL)
-    // {
-    //     d = aux->value;
-    //     if (d->pre_requisito->size !=0){
-    //         printf("Pre-requisitos da disciplina %s:", d->codigo);
-    //         forward_list_print(d->pre_requisito, print_string_codigo_disciplina);
-    //         printf("\n");
-    //     }
-    //     aux = aux->next;
-    // }
-
-    // aux = disciplinas->head->next->next->next->next;
-    // d = aux->value;
-
-    // printf("%d\n", forward_list_size(d->matriculas));
 
     if (num_relatorio == 1)
     {
@@ -354,37 +326,8 @@ int main(){
         disciplinas_matriculadas(num_matricula, disciplinas);
     }
 
-    Node *n_aux;
-    Node *n_aux2;
-    Matricula *m_aux;
-    Disciplina *d_aux;
-    Estudante *e_aux;
-
-    n_aux = disciplinas->head;
-    d_aux = n_aux->value;
-    n_aux2 = d_aux->matriculas->head;
-    while (n_aux != NULL)
-    {   
-        d_aux = n_aux->value;
-        n_aux2 = d_aux->matriculas->head;
-        m_aux = n_aux2->value;
-        matricula_destroy(m_aux);
-        disciplina_destroy(n_aux->value);
-        n_aux = n_aux->next;
-    }
-
-    n_aux = alunos->head;
-    while (n_aux != NULL)
-    {
-        e_aux = n_aux->value;
-        estudante_destroy(e_aux);
-        n_aux = n_aux->next;
-    }
-
-    forward_list_destroy(alunos);
     forward_list_destroy(disciplinas);
-    node_destroy(n_aux);
-    node_destroy(n_aux2);
+    forward_list_destroy(alunos);
 
     fclose(arq);
     return 0;

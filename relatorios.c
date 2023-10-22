@@ -81,7 +81,7 @@ void pre_requisitos_diretos(char *codigo, ForwardList *d)
     printf("Lista de pre requisitos da disciplina %s:\n", codigo);
     forward_list_print(d_aux->pre_requisito, print_string_codigo);
 
-    disciplina_destroy(d_aux);
+    // disciplina_destroy(d_aux);
 };
 
 void pre_requisitos_completos(char *codigo, ForwardList *d)
@@ -103,7 +103,7 @@ void pre_requisitos_completos(char *codigo, ForwardList *d)
     while(aux != NULL)
     {
         d_aux2 = aux->value;
-        printf("%s:", d_aux2->codigo);
+        printf("%s\n", d_aux2->codigo);
 
         if (d_aux2->pre_requisito != NULL)
         {
@@ -159,18 +159,12 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
     { 
         exit(printf("Esse aluno nao esta matriculado em disciplinas\n"));
     }
-    printf("O aluno esta matriculado nas disciplinas: ");
+    printf("O aluno esta matriculado nas disciplinas:\n");
     forward_list_print(lista_matriculas, print_string_codigo);
 
     forward_list_destroy(lista_matriculas);
     node_destroy(it_disciplina);
     node_destroy(it_matriculas);
     disciplina_destroy(d_aux);
-    disciplina_destroy(d_encontrada);
     matricula_destroy(m_aux);
 };
-
-void reprovacoes_por_professor(ForwardList *d)
-{
-    
-}
