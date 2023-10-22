@@ -62,6 +62,7 @@ void alunos_matriculados(char *codigo, ForwardList *d, ForwardList *e)
         aux = aux->next;    
     }
     printf("Alunos matriculados na disciplina %s:\n", codigo);
+
     forward_list_print(a_matriculados, print_string_nome_aluno);
     forward_list_destroy(a_matriculados);
     disciplina_destroy(d_aux);

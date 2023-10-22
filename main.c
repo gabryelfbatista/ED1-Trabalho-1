@@ -40,10 +40,18 @@ void print_string_codigo_disciplina(data_type data)
 void checa_existencia_disciplina(ForwardList *d, char *codigo)
 {
     if (forward_list_find(d, codigo, compara_string_codigo) == NULL)
-        {
-            exit(printf("Essa disciplina nao foi encontrada \n"));
-        };
+    {
+        exit(printf("Essa disciplina nao foi encontrada \n"));
+    };
 }
+
+void checa_existencia_aluno(ForwardList *e, int matricula)
+{
+    if (forward_list_find(e, &matricula, compara_int) == NULL)
+    {
+        exit(printf("Esse aluno nao esta cadastrado\n"));
+    }
+};
 
 ForwardList *cria_lista_alunos(FILE *arq)
 {
@@ -66,13 +74,9 @@ ForwardList *cria_lista_alunos(FILE *arq)
     {
         resultado = fgets(linha, 100, arq);
 
-        // printf("Resultado: %s\n", resultado);
-
         pedaco_texto = strtok(resultado, separador);
         nome = malloc(sizeof(pedaco_texto));
         strcpy(nome, pedaco_texto);
-
-        // printf("Nome: %s\n", nome);
 
         pedaco_texto = strtok(NULL, separador);
         matricula = atoi(pedaco_texto);
@@ -142,29 +146,24 @@ void cria_lista_requisitos(FILE *arq, ForwardList *d)
     Disciplina *d_aux2;
 
     fscanf(arq, "%d\n", &qtd_requisitos);
-    // printf("qtd_requisitos: %d\n", qtd_requisitos);
 
     for (int i = 0; i < qtd_requisitos; i++)
     {
         resultado = fgets(linha, 200, arq);
-        // printf("Resultado: %s\n", resultado);
 
         pedaco_texto = strtok(resultado, separador);
         codigo = malloc(sizeof(pedaco_texto));
         strcpy(codigo, pedaco_texto);
-        // printf("Codigo: %s\n", codigo);
 
         // d_aux = d->head->value;
 
         d_aux = forward_list_find(d, codigo, compara_string_codigo);
-        // printf("Codigo disciplina encontrada: %s\n", d_aux->codigo);
 
         pedaco_texto = strtok(NULL, "\n");
         codigo_requisito = malloc(sizeof(pedaco_texto));
         strcpy(codigo_requisito, pedaco_texto);
 
         d_aux2 = forward_list_find(d, codigo_requisito, compara_string_codigo);
-        // printf("Codigo pre requisito encontrado: %s\n", d_aux2->codigo);
 
         forward_list_push_front(d_aux->pre_requisito, d_aux2);
     }
@@ -202,7 +201,6 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
     */
     for (int i = 0; i <= qtd_matriculas; i++) 
     {
-        // printf("O valor de i eh: %d\n", i);
         resultado = fgets(linha, 200, arq);
 
         pedaco_codigo = strtok(resultado, separador);
@@ -235,8 +233,6 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
 
             Matricula *m = matricula_construct(e_aux, nota, presenca, aprovado);
 
-            // forward_list_push_front(matriculas, m);
-
             forward_list_push_front(d_aux->matriculas, m);
             
             i--;
@@ -252,8 +248,6 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
 
             e_aux = forward_list_find(alunos, &matricula_aluno, compara_int);
 
-            // printf("Nome do aluno encontrado: %s\n", e_aux->nome);
-
             matricula_comparador = malloc(sizeof(pedaco_matricula));
             strcpy(matricula_comparador, pedaco_matricula);
 
@@ -267,8 +261,6 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
             aprovado = atoi(pedaco_texto);
 
             Matricula *m = matricula_construct(e_aux, nota, presenca, aprovado);
-
-            // forward_list_push_front(matriculas, m);
 
             forward_list_push_front(d_aux->matriculas, m);
         }
@@ -322,7 +314,11 @@ int main(){
     }
     else if (num_relatorio == 4)
     {
+        printf("Digite o numero da matricula:\n");
         scanf("%d", &num_matricula);
+
+        checa_existencia_aluno(alunos, num_matricula);
+
         disciplinas_matriculadas(num_matricula, disciplinas);
     }
 
