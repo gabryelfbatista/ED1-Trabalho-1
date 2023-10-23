@@ -75,18 +75,20 @@ ForwardList *cria_lista_alunos(FILE *arq)
         resultado = fgets(linha, 100, arq);
 
         pedaco_texto = strtok(resultado, separador);
-        nome = malloc(sizeof(pedaco_texto));
+        nome = malloc(strlen(pedaco_texto)+1);
         strcpy(nome, pedaco_texto);
 
         pedaco_texto = strtok(NULL, separador);
         matricula = atoi(pedaco_texto);
 
         pedaco_texto = strtok(NULL, "\n");
-        email = malloc(sizeof(pedaco_texto));               
+        email = malloc(strlen(pedaco_texto)+1);               
         strcpy(email, pedaco_texto);
 
         Estudante *e = estudante_construct(nome, matricula, email);
         forward_list_push_front(alunos, e);
+        free(nome);
+        free(email);
     }
     return alunos;
 }
@@ -113,19 +115,22 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
         resultado = fgets(linha, 200, arq);
 
         pedaco_texto = strtok(resultado, separador);
-        nome = malloc(sizeof(pedaco_texto));
+        nome = malloc(strlen(pedaco_texto)+1);
         strcpy(nome, pedaco_texto);
 
         pedaco_texto = strtok(NULL, separador);
-        codigo = malloc(sizeof(pedaco_texto));
+        codigo = malloc(strlen(pedaco_texto)+1);
         strcpy(codigo, pedaco_texto);
 
         pedaco_texto = strtok(NULL, "\n");
-        nome_professor = malloc(sizeof(pedaco_texto));
+        nome_professor = malloc(strlen(pedaco_texto)+1);
         strcpy(nome_professor, pedaco_texto);
 
         Disciplina *d = disciplina_construct(nome, codigo, nome_professor);
         forward_list_push_front(disciplinas, d);
+        free(nome);
+        free(codigo);
+        free(nome_professor);
     }
 
     return disciplinas;
@@ -152,7 +157,7 @@ void cria_lista_requisitos(FILE *arq, ForwardList *d)
         resultado = fgets(linha, 200, arq);
 
         pedaco_texto = strtok(resultado, separador);
-        codigo = malloc(sizeof(pedaco_texto));
+        codigo = malloc(strlen(pedaco_texto)+1);
         strcpy(codigo, pedaco_texto);
 
         // d_aux = d->head->value;
@@ -160,12 +165,14 @@ void cria_lista_requisitos(FILE *arq, ForwardList *d)
         d_aux = forward_list_find(d, codigo, compara_string_codigo);
 
         pedaco_texto = strtok(NULL, "\n");
-        codigo_requisito = malloc(sizeof(pedaco_texto));
+        codigo_requisito = malloc(strlen(pedaco_texto)+1);
         strcpy(codigo_requisito, pedaco_texto);
 
         d_aux2 = forward_list_find(d, codigo_requisito, compara_string_codigo);
 
         forward_list_push_front(d_aux->pre_requisito, d_aux2);
+        free(codigo);
+        free(codigo_requisito);
     }
 }
 
