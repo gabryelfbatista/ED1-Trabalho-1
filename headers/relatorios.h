@@ -11,4 +11,6 @@ void pre_requisitos_completos(char *codigo, ForwardList *d);
 
 void disciplinas_matriculadas(int matricula, ForwardList *d);
 
+void reprovacoes_por_professor(ForwardList *d);
+
 #endif

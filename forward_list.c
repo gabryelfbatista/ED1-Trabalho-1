@@ -79,6 +79,33 @@ ForwardList *forward_list_reverse(ForwardList *l)
     return l2;
 };
 
+// ForwardList *forward_list_sort(ForwardList *l, int (*cmp_fn)(data_type, data_type))
+// {
+//     Node *it1 = l->head;
+//     Node *it2 = it1->next;
+//     Node *aux;
+
+//     while (it1 != NULL)
+//     {
+//         while (it2 != NULL)
+//         {
+//             if (cmp_fn(it1->value, it2->value) == 0)
+//             {
+//                 aux = it2;
+//                 it2 = it1;
+//                 it1 = aux;
+//             } 
+//             else 
+//             {
+//                 it2 = it2->next;
+//             }
+//         }
+//         it1 = it1->next;
+//     }
+//     free(aux);
+//     return l;
+// }
+
 void forward_list_destroy(ForwardList *l) 
 {
     Node *aux = l->head;

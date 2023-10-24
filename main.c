@@ -45,12 +45,17 @@ void checa_existencia_disciplina(ForwardList *d, char *codigo)
     };
 }
 
-void checa_existencia_aluno(ForwardList *e, int matricula)
+int checa_existencia_aluno(ForwardList *e, int matricula)
 {
     if (forward_list_find(e, &matricula, compara_int) == NULL)
     {
-        exit(printf("Esse aluno nao esta cadastrado\n"));
+        return 0;
     }
+    else 
+    {
+        return 1;
+    }
+
 };
 
 ForwardList *cria_lista_alunos(FILE *arq)
@@ -275,9 +280,19 @@ int main(){
         printf("Digite o numero da matricula:\n");
         scanf("%d", &num_matricula);
 
-        checa_existencia_aluno(alunos, num_matricula);
-
-        disciplinas_matriculadas(num_matricula, disciplinas);
+        if (checa_existencia_aluno(alunos, num_matricula) == 0)
+        {
+            printf("Esse aluno nao esta cadastrado\n");
+        }
+        else
+        {
+            disciplinas_matriculadas(num_matricula, disciplinas);
+        };
+    }
+    else if (num_relatorio == 5)
+    {
+        printf("Numero de reprovacoes por professor:\n");
+        reprovacoes_por_professor(disciplinas);
     }
 
 

@@ -33,6 +33,34 @@ void print_string_codigo(data_type data)
     printf("%s", d->codigo);
 };
 
+typedef struct
+{
+    char *nome;
+    int n_reprovacoes;
+    char *cod;
+} Professor;
+
+int compara_int_reprovacoes(data_type professor1, data_type professor2)
+{
+    Professor *p1 = professor1;
+    Professor *p2 = professor2;
+    int n1 = p1->n_reprovacoes;
+    int n2 = p2->n_reprovacoes;
+
+    if (n1 > n2)
+    {
+        return 0;
+    }
+
+    return 1;
+};
+
+void print_reprovacoes(data_type data)
+{
+    Professor *p = data;
+    printf("Professor %s na disciplina de %s: %d\n", p->nome, p->cod, p->n_reprovacoes);
+}
+
 void alunos_matriculados(char *codigo, ForwardList *d, ForwardList *e)
 {   
     ForwardList *a_matriculados = forward_list_construct(); //crio uma lista de alunos matriculados temporaria
@@ -43,27 +71,29 @@ void alunos_matriculados(char *codigo, ForwardList *d, ForwardList *e)
     Estudante *e_aux;
 
     if (aux == NULL){
-        exit(printf("Nao ha matriculas nessa disciplina\n"));
+        printf("Nao ha matriculas nessa disciplina\n");
     }
-
-    //itera sobre a lista de matriculas
-    while (aux != NULL)
-    {
-        
-        m_aux = aux->value;
-        // procura o estudante apontado pela matricula 
-        e_aux = forward_list_find(a_matriculados, m_aux->aluno->nome, compara_string_nome);
-
-        //se nao existir na lista temporaria de alunos matriculados, adiciona o aluno
-        if (e_aux == NULL)
+    else {
+        //itera sobre a lista de matriculas
+        while (aux != NULL)
         {
-            forward_list_push_front(a_matriculados, m_aux->aluno);
-        }
-        aux = aux->next;    
-    }
-    printf("Alunos matriculados na disciplina %s:\n", codigo);
+            
+            m_aux = aux->value;
+            // procura o estudante apontado pela matricula 
+            e_aux = forward_list_find(a_matriculados, m_aux->aluno->nome, compara_string_nome);
 
-    forward_list_print(a_matriculados, print_string_nome_aluno);
+            //se nao existir na lista temporaria de alunos matriculados, adiciona o aluno
+            if (e_aux == NULL)
+            {
+                forward_list_push_front(a_matriculados, m_aux->aluno);
+            }
+            aux = aux->next;    
+        }
+        printf("Alunos matriculados na disciplina %s:\n", codigo);
+
+        forward_list_print(a_matriculados, print_string_nome_aluno);
+    }
+
 
     forward_list_destroy(a_matriculados);
 };
@@ -74,12 +104,13 @@ void pre_requisitos_diretos(char *codigo, ForwardList *d)
 
     if (d_aux->pre_requisito->head == NULL)
     {
-        exit(printf("Essa disciplina não tem pre requisitos\n"));
+        printf("Essa disciplina não tem pre requisitos\n");
     }
-
-    printf("Lista de pre requisitos da disciplina %s:\n", codigo);
-    forward_list_print(d_aux->pre_requisito, print_string_codigo);
-
+    else 
+    {
+        printf("Lista de pre requisitos da disciplina %s:\n", codigo);
+        forward_list_print(d_aux->pre_requisito, print_string_codigo);
+    }
 };
 
 void pre_requisitos_completos(char *codigo, ForwardList *d)
@@ -90,30 +121,33 @@ void pre_requisitos_completos(char *codigo, ForwardList *d)
     //verifico se ela possui pre requisitos
     if (d_aux->pre_requisito->head == NULL)
     {
-        exit(printf("Essa disciplina não tem pre requisitos\n"));
+        printf("Essa disciplina não tem pre requisitos\n");
     }
-    
-    //inverto a lista de pre requisitos pra sair na ordem de entrada
-    d_aux->pre_requisito = forward_list_reverse(d_aux->pre_requisito);
-
-    Node *aux = d_aux->pre_requisito->head;
-
-    Disciplina *d_aux2 = aux->value;
-    
-    //itero sobre a lista printando pre requisitos
-    printf("Pre requisitos completos da disciplina %s:\n", codigo);
-    while(aux != NULL)
+    else 
     {
-        d_aux2 = aux->value;
-        printf("%s\n", d_aux2->codigo);
+        //inverto a lista de pre requisitos pra sair na ordem de entrada
+        d_aux->pre_requisito = forward_list_reverse(d_aux->pre_requisito);
 
-        if (d_aux2->pre_requisito != NULL)
+        Node *aux = d_aux->pre_requisito->head;
+
+        Disciplina *d_aux2 = aux->value;
+        
+        //itero sobre a lista printando pre requisitos
+        printf("Pre requisitos completos da disciplina %s:\n", codigo);
+        while(aux != NULL)
         {
-            d_aux2->pre_requisito = forward_list_reverse(d_aux2->pre_requisito);
-            forward_list_print(d_aux2->pre_requisito, print_string_codigo);
+            d_aux2 = aux->value;
+            printf("%s\n", d_aux2->codigo);
+
+            if (d_aux2->pre_requisito != NULL)
+            {
+                d_aux2->pre_requisito = forward_list_reverse(d_aux2->pre_requisito);
+                forward_list_print(d_aux2->pre_requisito, print_string_codigo);
+            }
+            aux = aux->next; 
         }
-        aux = aux->next; 
     }
+    
 };
 
 void disciplinas_matriculadas(int matricula, ForwardList *d)
@@ -154,12 +188,60 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
     
     if (encontrou_matricula == 0)
     { 
-        exit(printf("Esse aluno nao esta matriculado em disciplinas\n"));
+        printf("Esse aluno nao esta matriculado em disciplinas\n");
     }
-    printf("O aluno esta matriculado nas disciplinas:\n");
-    forward_list_print(lista_matriculas, print_string_codigo);
+    else 
+    {
+        printf("O aluno esta matriculado nas disciplinas:\n");
+        forward_list_print(lista_matriculas, print_string_codigo);
+    }
 
     forward_list_destroy(lista_matriculas);
     node_destroy(it_disciplina);
     node_destroy(it_matriculas);
 };
+
+void reprovacoes_por_professor(ForwardList *d)
+{
+    ForwardList *reprovacoes = forward_list_construct();
+    Node *it = d->head;
+    Disciplina *d_aux = it->value;
+    Node *m_it = d_aux->matriculas->head;
+    Matricula *m_aux;
+    while (it != NULL)
+    {
+        Professor *p = malloc(sizeof(Professor)); 
+        p->n_reprovacoes = 0;
+        d_aux = it->value;
+        p->nome = d_aux->professor;
+        p->cod = d_aux->codigo;
+        m_it = d_aux->matriculas->head;
+        while (m_it != NULL)
+        {
+            m_aux = m_it->value;
+            if (m_aux->aprovado == 0)
+            {
+                p->n_reprovacoes++;
+            }
+            m_it = m_it->next;
+        }
+        forward_list_push_front(reprovacoes, p);
+        it = it->next;
+    }
+
+    // forward_list_sort(reprovacoes, compara_int_reprovacoes);
+    // forward_list_print(reprovacoes, print_reprovacoes);
+
+    //OBS: nao consegui implementar a tempo :( 
+
+    it = reprovacoes->head;
+    Professor *p;
+    while (it != NULL)
+    {
+        p = it->value;
+        free(p);
+        it = it->next;
+    }
+
+    forward_list_destroy(reprovacoes);
+}

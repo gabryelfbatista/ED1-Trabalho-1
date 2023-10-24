@@ -23,6 +23,8 @@ data_type forward_list_get(ForwardList *l, int i);
 
 ForwardList *forward_list_reverse(ForwardList *l);
 
+ForwardList *forward_list_sort(ForwardList *l, int (*cmp_fn)(data_type, data_type));
+
 void forward_list_destroy(ForwardList *l);
 
 #endif
