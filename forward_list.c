@@ -75,6 +75,7 @@ ForwardList *forward_list_reverse(ForwardList *l)
         aux = aux->next;
     }
     l2->size = l->size;
+    forward_list_destroy(l);
     return l2;
 };
 

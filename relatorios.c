@@ -64,10 +64,8 @@ void alunos_matriculados(char *codigo, ForwardList *d, ForwardList *e)
     printf("Alunos matriculados na disciplina %s:\n", codigo);
 
     forward_list_print(a_matriculados, print_string_nome_aluno);
+
     forward_list_destroy(a_matriculados);
-    disciplina_destroy(d_aux);
-    node_destroy(aux);
-    estudante_destroy(e_aux);
 };
 
 void pre_requisitos_diretos(char *codigo, ForwardList *d)
@@ -82,24 +80,27 @@ void pre_requisitos_diretos(char *codigo, ForwardList *d)
     printf("Lista de pre requisitos da disciplina %s:\n", codigo);
     forward_list_print(d_aux->pre_requisito, print_string_codigo);
 
-    // disciplina_destroy(d_aux);
 };
 
 void pre_requisitos_completos(char *codigo, ForwardList *d)
 {
+    // encontro a disciplina passada
     Disciplina *d_aux = forward_list_find(d, codigo, compara_string_codigo_disciplina);
 
+    //verifico se ela possui pre requisitos
     if (d_aux->pre_requisito->head == NULL)
     {
         exit(printf("Essa disciplina não tem pre requisitos\n"));
     }
     
+    //inverto a lista de pre requisitos pra sair na ordem de entrada
     d_aux->pre_requisito = forward_list_reverse(d_aux->pre_requisito);
 
     Node *aux = d_aux->pre_requisito->head;
 
     Disciplina *d_aux2 = aux->value;
     
+    //itero sobre a lista printando pre requisitos
     printf("Pre requisitos completos da disciplina %s:\n", codigo);
     while(aux != NULL)
     {
@@ -110,14 +111,9 @@ void pre_requisitos_completos(char *codigo, ForwardList *d)
         {
             d_aux2->pre_requisito = forward_list_reverse(d_aux2->pre_requisito);
             forward_list_print(d_aux2->pre_requisito, print_string_codigo);
-            // printf(";\n");
         }
         aux = aux->next; 
     }
-
-    disciplina_destroy(d_aux);
-    disciplina_destroy(d_aux2);
-    node_destroy(aux);
 };
 
 void disciplinas_matriculadas(int matricula, ForwardList *d)
@@ -166,6 +162,4 @@ void disciplinas_matriculadas(int matricula, ForwardList *d)
     forward_list_destroy(lista_matriculas);
     node_destroy(it_disciplina);
     node_destroy(it_matriculas);
-    disciplina_destroy(d_aux);
-    matricula_destroy(m_aux);
 };

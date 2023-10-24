@@ -15,6 +15,9 @@ Disciplina *disciplina_construct(char *nome, char *codigo, char *professor)
 
 void disciplina_destroy(Disciplina *d)
 {
+    free(d->nome);
+    free(d->codigo);
+    free(d->professor);
     forward_list_destroy(d->pre_requisito);
     forward_list_destroy(d->matriculas);
     free(d);

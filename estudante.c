@@ -4,7 +4,7 @@
 
 Estudante *estudante_construct(char *nome, int matricula, char *email)
 {
-    Estudante *e = (Estudante *)malloc(sizeof(Estudante));
+    Estudante *e = (Estudante *)calloc(1, sizeof(Estudante));
     e->nome = nome;
     e->matricula = matricula;
     e->email = email;
@@ -13,5 +13,7 @@ Estudante *estudante_construct(char *nome, int matricula, char *email)
 
 void estudante_destroy(Estudante *e)
 {
+    free(e->nome);
+    free(e->email);
     free(e);
 };

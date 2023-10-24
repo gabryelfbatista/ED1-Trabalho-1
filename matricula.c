@@ -4,7 +4,7 @@
 
 Matricula *matricula_construct(Estudante *aluno, float notaFinal, float presenca, int aprovado)
 {
-    Matricula *m = (Matricula *)malloc(sizeof(Matricula));
+    Matricula *m = (Matricula *)calloc(1 , sizeof(Matricula));
     m->aluno = aluno;
     m->notaFinal = notaFinal;
     m->presenca = presenca;

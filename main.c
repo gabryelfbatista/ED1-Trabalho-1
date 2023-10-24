@@ -59,8 +59,8 @@ ForwardList *cria_lista_alunos(FILE *arq)
 
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_alunos;
-    char linha[100];
-    char *resultado = " ";
+    char linha[500];
+    char *resultado;
     char *pedaco_texto;
     char separador[2] = ";";
 
@@ -72,7 +72,7 @@ ForwardList *cria_lista_alunos(FILE *arq)
 
     for (int i = 0; i < qtd_alunos; i++)
     {
-        resultado = fgets(linha, 100, arq);
+        resultado = fgets(linha, 499, arq);
 
         pedaco_texto = strtok(resultado, separador);
         nome = malloc(strlen(pedaco_texto)+1);
@@ -87,8 +87,6 @@ ForwardList *cria_lista_alunos(FILE *arq)
 
         Estudante *e = estudante_construct(nome, matricula, email);
         forward_list_push_front(alunos, e);
-        free(nome);
-        free(email);
     }
     return alunos;
 }
@@ -112,7 +110,7 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
 
     for (int i = 0; i < qtd_disciplinas; i++)
     {
-        resultado = fgets(linha, 200, arq);
+        resultado = fgets(linha, 199, arq);
 
         pedaco_texto = strtok(resultado, separador);
         nome = malloc(strlen(pedaco_texto)+1);
@@ -128,9 +126,6 @@ ForwardList *cria_lista_disciplinas(FILE *arq)
 
         Disciplina *d = disciplina_construct(nome, codigo, nome_professor);
         forward_list_push_front(disciplinas, d);
-        free(nome);
-        free(codigo);
-        free(nome_professor);
     }
 
     return disciplinas;
@@ -140,35 +135,33 @@ void cria_lista_requisitos(FILE *arq, ForwardList *d)
 {
     /* VARIAVEIS PARA AUXILIAR NA LEITURA DOS ARQUIVOS*/
     int qtd_requisitos;
-    char linha[200];
+    char linha[500];
     char *resultado;
     char *pedaco_texto;
     char separador[2] = ";";
 
     char *codigo;
     char *codigo_requisito;
-    Disciplina *d_aux;
-    Disciplina *d_aux2;
+    // Disciplina *d_aux;
+    // Disciplina *d_aux2;
 
     fscanf(arq, "%d\n", &qtd_requisitos);
 
     for (int i = 0; i < qtd_requisitos; i++)
     {
-        resultado = fgets(linha, 200, arq);
+        resultado = fgets(linha, 499, arq);
 
         pedaco_texto = strtok(resultado, separador);
         codigo = malloc(strlen(pedaco_texto)+1);
         strcpy(codigo, pedaco_texto);
 
-        // d_aux = d->head->value;
-
-        d_aux = forward_list_find(d, codigo, compara_string_codigo);
-
         pedaco_texto = strtok(NULL, "\n");
         codigo_requisito = malloc(strlen(pedaco_texto)+1);
         strcpy(codigo_requisito, pedaco_texto);
 
-        d_aux2 = forward_list_find(d, codigo_requisito, compara_string_codigo);
+        Disciplina *d_aux = forward_list_find(d, codigo, compara_string_codigo);
+
+        Disciplina *d_aux2 = forward_list_find(d, codigo_requisito, compara_string_codigo);
 
         forward_list_push_front(d_aux->pre_requisito, d_aux2);
         free(codigo);
@@ -185,13 +178,10 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
     char linha[200];
     char *resultado;
     char *pedaco_texto;
-    char *pedaco_codigo;
-    char *pedaco_matricula;
     char separador[2] = ";";
 
     char *codigo;
     int matricula_aluno;
-    char *matricula_comparador; //pra comparar uma matricula com outra
     float nota;
     float presenca;
     int aprovado;
@@ -201,76 +191,35 @@ void cria_lista_matriculas(FILE *arq, ForwardList *disciplinas, ForwardList *alu
 
     fscanf(arq, "%d\n", &qtd_matriculas);
 
-    /*
-        OBS: como na logica que eu usei a primeira matricula nunca tem um igual,
-        no primeiro ciclo de iteração ele sempre soma +1 entao tem q iterar
-        até chegar a ao numero de quantidade de matriculas
-    */
-    for (int i = 0; i <= qtd_matriculas; i++) 
+    for (int i = 0; i < qtd_matriculas; i++) 
     {
-        resultado = fgets(linha, 200, arq);
+        resultado = fgets(linha, 199, arq);
 
-        pedaco_codigo = strtok(resultado, separador);
+        pedaco_texto = strtok(resultado, separador);
+        codigo = malloc(strlen(pedaco_texto)+1);
+        strcpy(codigo, pedaco_texto);
         
-        pedaco_matricula = strtok(NULL, separador);       
+        pedaco_texto = strtok(NULL, separador);       
+        matricula_aluno = atoi(pedaco_texto);
         
-        // se o codigo da disciplina e a matricula do aluno for a mesma, então n conta a linha
-        if (strcmp(pedaco_codigo, codigo) == 0 && strcmp(pedaco_matricula, matricula_comparador) == 0)
-        {
-            codigo = malloc(sizeof(pedaco_codigo));
-            strcpy(codigo, pedaco_codigo);
+        pedaco_texto = strtok(NULL, separador); 
+        nota = atof(pedaco_texto);
+        
+        pedaco_texto = strtok(NULL, separador);
+        presenca = atof(pedaco_texto);
+        
+        pedaco_texto = strtok(NULL, "\n");
+        aprovado = atoi(pedaco_texto);
 
-            d_aux = forward_list_find(disciplinas, codigo, compara_string_codigo);
+        d_aux = forward_list_find(disciplinas, codigo, compara_string_codigo);
 
-            matricula_aluno = atoi(pedaco_matricula);
 
-            e_aux = forward_list_find(alunos, &matricula_aluno, compara_int);
+        e_aux = forward_list_find(alunos, &matricula_aluno, compara_int);
 
-            matricula_comparador = malloc(sizeof(pedaco_matricula));
-            strcpy(matricula_comparador, pedaco_matricula);
+        Matricula *m = matricula_construct(e_aux, nota, presenca, aprovado);
 
-            pedaco_texto = strtok(NULL, separador); 
-            nota = atof(pedaco_texto);
-            
-            pedaco_texto = strtok(NULL, separador);
-            presenca = atof(pedaco_texto);
-            
-            pedaco_texto = strtok(NULL, "\n");
-            aprovado = atoi(pedaco_texto);
-
-            Matricula *m = matricula_construct(e_aux, nota, presenca, aprovado);
-
-            forward_list_push_front(d_aux->matriculas, m);
-            
-            i--;
-        }
-        else 
-        {
-            codigo = malloc(sizeof(pedaco_codigo));
-            strcpy(codigo, pedaco_codigo);
-
-            d_aux = forward_list_find(disciplinas, codigo, compara_string_codigo);
-
-            matricula_aluno = atoi(pedaco_matricula);
-
-            e_aux = forward_list_find(alunos, &matricula_aluno, compara_int);
-
-            matricula_comparador = malloc(sizeof(pedaco_matricula));
-            strcpy(matricula_comparador, pedaco_matricula);
-
-            pedaco_texto = strtok(NULL, separador); 
-            nota = atof(pedaco_texto);
-            
-            pedaco_texto = strtok(NULL, separador);
-            presenca = atof(pedaco_texto);
-            
-            pedaco_texto = strtok(NULL, "\n");
-            aprovado = atoi(pedaco_texto);
-
-            Matricula *m = matricula_construct(e_aux, nota, presenca, aprovado);
-
-            forward_list_push_front(d_aux->matriculas, m);
-        }
+        forward_list_push_front(d_aux->matriculas, m);
+        free(codigo);
     }
 }
 
@@ -288,8 +237,10 @@ int main(){
     FILE *arq = fopen(entrada, "r");
 
     ForwardList *alunos = cria_lista_alunos(arq);
+    // forward_list_print(alunos, print_string_nome_estudante);
     ForwardList *disciplinas = cria_lista_disciplinas(arq);
     cria_lista_requisitos(arq, disciplinas);
+    // forward_list_print(disciplinas, print_string_codigo_disciplina);
     cria_lista_matriculas(arq, disciplinas, alunos);
 
     if (num_relatorio == 1)
@@ -329,8 +280,49 @@ int main(){
         disciplinas_matriculadas(num_matricula, disciplinas);
     }
 
-    forward_list_destroy(disciplinas);
+
+    // Dando free em tudo que foi alocado 
+
+    Node *aux = alunos->head;
+
+    while (aux != NULL)
+    {
+        estudante_destroy(aux->value);
+        aux = aux->next;
+    }
+
     forward_list_destroy(alunos);
+
+
+    aux = disciplinas->head;
+    Disciplina *d;
+    Node *m_aux;
+    while (aux != NULL)
+    {
+        d = aux->value;
+        m_aux = d->matriculas->head;
+
+        while (m_aux != NULL)
+        {
+            matricula_destroy(m_aux->value);
+            m_aux = m_aux->next;
+        }
+        aux = aux->next;
+    }
+
+    aux = disciplinas->head;
+    d = aux->value;
+    while (aux != NULL)
+    {
+        d = aux->value;
+        disciplina_destroy(d); 
+        aux = aux->next;
+    }
+    
+    forward_list_destroy(disciplinas);
+
+    free(aux);
+    free(m_aux);
 
     fclose(arq);
     return 0;
